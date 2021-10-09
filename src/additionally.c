@@ -2741,6 +2741,7 @@ convolutional_layer make_convolutional_layer(int batch, int h, int w, int c, int
 
     l.weights = calloc(c*n*size*size, sizeof(float));
     l.weights_int8 = calloc(c*n*size*size, sizeof(int8_t));
+
     //l.weight_updates = calloc(c*n*size*size, sizeof(float));
 
     l.biases = calloc(n, sizeof(float));
@@ -3528,7 +3529,70 @@ void load_weights_upto_cpu(network *net, char *filename, int cutoff)
     fclose(fp);
 }
 
+void save_weights_int8(network net, char *filename, int cutoff)
+{
+    fprintf(stderr, "Saving weights to %s\n", filename);
+    FILE *fp = fopen(filename, "wb");
+    if(!fp) file_error(filename);
 
+    int i;
+    printf("%d \n",cutoff);
+    for(i = 0; i < cutoff; i++){
+        layer l = net.layers[i];
+        if(l.type == CONVOLUTIONAL){
+
+            int num = l.n*l.c*l.size*l.size;
+            fwrite(l.biases, sizeof(float), l.n, fp);
+
+            if (i >= 1 && l.activation != LINEAR){
+                fwrite(l.weights, sizeof(uint8_t), num, fp);
+            }
+            else{
+                fwrite(l.weights, sizeof(float), num, fp);
+            }
+
+            fwrite(l.weights_int8, sizeof(uint8_t), num, fp);
+
+            fwrite(&l.weights_quant_multipler, sizeof(float), 1, fp);
+            fwrite(&l.input_quant_multipler, sizeof(float), 1, fp);
+
+        }
+    }
+    fclose(fp);
+}
+
+void load_weights_int8(network *net, char *filename, int cutoff)
+{
+    fprintf(stderr, "Loading weights from %s... \n", filename);
+    fflush(stdout);
+    FILE *fp = fopen(filename, "rb");
+    if (!fp) file_error(filename);
+
+    int i;
+    for (i = 0; i < cutoff; i++) {
+        layer l = net->layers[i];
+        if(l.type == CONVOLUTIONAL){
+
+            int num = l.n*l.c*l.size*l.size;
+            fread(l.biases, sizeof(float), l.n, fp);
+
+            if (i >= 1 && l.activation != LINEAR){
+                fread(l.weights, sizeof(uint8_t), num, fp);
+            }
+            else{
+                fread(l.weights, sizeof(float), num, fp);
+            }
+
+            fread(l.weights_int8, sizeof(uint8_t), num, fp);
+
+            fread(&net->layers[i].weights_quant_multipler, sizeof(float), 1, fp);
+            fread(&net->layers[i].input_quant_multipler, sizeof(float), 1, fp);
+            
+
+        }
+    }
+    fclose(fp);
+}
 
 // parser.c
 convolutional_layer parse_convolutional(list *options, size_params params)

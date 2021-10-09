@@ -158,17 +158,37 @@ void test_detector_cpu(char **names, char *cfgfile, char *weightfile, char *file
     //image **alphabet = load_alphabet();            // image.c
     image **alphabet = NULL;
     network net = parse_network_cfg(cfgfile, 1, quantized);    // parser.c
+
+
     if (weightfile) {
-        load_weights_upto_cpu(&net, weightfile, net.n);    // parser.c
+    //    load_weights_upto_cpu(&net, weightfile, net.n);    // parser.c
     }
     //set_batch_network(&net, 1);                    // network.c
     srand(2222222);
-    yolov2_fuse_conv_batchnorm(net);
+    //yolov2_fuse_conv_batchnorm(net);
     calculate_binary_weights(net);
     if (quantized) {
         printf("\n\n Quantinization! \n\n");
-        quantinization_and_get_multipliers(net);
+        //quantinization_and_get_multipliers(net);
+        //save_weights_int8(net, "yhl3051.weights", net.n);    // parser.c
     }
+
+    //load_weights_int8(&net, "yolov31-tiny-int8.weights", net.n);
+    //save_weights_int8(net, "yolov31-tiny-int8.weights", net.n);
+    load_weights_int8(&net, "yolov3-tiny-int8.weights", net.n);
+
+
+/*
+    for (i = 0; i < net.n; i++) {
+        layer *l = &net.layers[i];
+
+        if (l->type == CONVOLUTIONAL) {
+
+            printf("%f \n",l->weights_quant_multipler);
+        }
+    }
+*/
+
     clock_t time;
     char buff[256];
     char *input = buff;

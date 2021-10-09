@@ -903,6 +903,10 @@ extern "C" {
     // parser.c
     void load_weights_upto_cpu(network *net, char *filename, int cutoff);
 
+    void save_weights_int8(network net, char *filename, int cutoff);
+
+    void load_weights_int8(network *net, char *filename, int cutoff);
+
 
     // -------------- yolov2_forward_network.c --------------------
 

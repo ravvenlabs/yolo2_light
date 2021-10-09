@@ -219,6 +219,7 @@ void forward_convolutional_layer_cpu(layer l, network_state state)
     int const out_size = out_h*out_w;
 
     // 2. Batch normalization
+    /*
     if (l.batch_normalize) {
         int b;
         for (b = 0; b < l.batch; b++) {
@@ -237,7 +238,7 @@ void forward_convolutional_layer_cpu(layer l, network_state state)
             }
         }
     }
-
+    */
     // 3. Add BIAS
     //if (l.batch_normalize)
     {
