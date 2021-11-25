@@ -17,7 +17,7 @@ How to compile:
 How to start:
 * Download [`yolov3.weights`](https://pjreddie.com/media/files/yolov3.weights) to the `bin` directory and run `./yolo.sh` on Linux (or `yolo_cpu.cmd` / `yolo_gpu.cmd` on Windows)
 * Download [`yolov3-tiny.weights`](https://pjreddie.com/media/files/yolov3-tiny.weights) to the `bin` directory and run `./tiny-yolo.sh`
-* `yolov3-tiny-int8.weights`, a custom weights file, is included by default
+* Additionally,`yolov3-tiny-int8.weights`, a custom weights file, is included by default
 
 How to use **INT8**-inference:
 * Use flag `-quantized` at the end of command, for example, [`tiny-yolo-int8.sh`](https://github.com/AlexeyAB/yolo2_light/blob/master/bin/tiny-yolo-int8.sh) or [`yolo_cpu_int8.cmd`](https://github.com/AlexeyAB/yolo2_light/blob/master/bin/yolo_cpu_int8.cmd)
